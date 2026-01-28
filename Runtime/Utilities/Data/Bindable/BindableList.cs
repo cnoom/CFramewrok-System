@@ -1,0 +1,124 @@
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+
+namespace CFramework.Data.Bindable
+{
+    public class BindableList<T> : Collection<T>
+    {
+
+        [NonSerialized]
+        private EasyEvent<int, T> mCollectionAdd;
+
+        [NonSerialized]
+        private EasyEvent mOnClear;
+
+
+        [NonSerialized]
+        private EasyEvent<int> mOnCountChanged;
+
+        [NonSerialized]
+        private EasyEvent<int, int, T> mOnMove;
+
+        [NonSerialized]
+        private EasyEvent<int, T> mOnRemove;
+
+        [NonSerialized]
+        private EasyEvent<int, T, T> mOnReplace;
+        public BindableList()
+        {
+        }
+
+        public BindableList(IEnumerable<T> collection)
+        {
+            if(collection == null) throw new ArgumentNullException(nameof(collection));
+
+            foreach (T item in collection)
+            {
+                Add(item);
+            }
+        }
+
+        public BindableList(List<T> list) : base(list != null ? new List<T>(list) : new List<T>())
+        {
+        }
+        public EasyEvent<int> OnCountChanged => mOnCountChanged ??= new EasyEvent<int>();
+        public EasyEvent OnClear => mOnClear ??= new EasyEvent();
+        public EasyEvent<int, T> OnAdd => mCollectionAdd ??= new EasyEvent<int, T>();
+
+        /// <summary>
+        ///     int:oldIndex
+        ///     int:newIndex
+        ///     T:item
+        /// </summary>
+        public EasyEvent<int, int, T> OnMove => mOnMove ??= new EasyEvent<int, int, T>();
+
+        public EasyEvent<int, T> OnRemove => mOnRemove ??= new EasyEvent<int, T>();
+
+        /// <summary>
+        ///     int:index
+        ///     T:oldItem
+        ///     T:newItem
+        /// </summary>
+        public EasyEvent<int, T, T> OnReplace => mOnReplace ??= new EasyEvent<int, T, T>();
+
+        protected override void ClearItems()
+        {
+            int beforeCount = Count;
+            base.ClearItems();
+
+            mOnClear?.Trigger();
+            if(beforeCount > 0)
+            {
+                mOnCountChanged?.Trigger(Count);
+            }
+        }
+
+        protected override void InsertItem(int index, T item)
+        {
+            base.InsertItem(index, item);
+
+            mCollectionAdd?.Trigger(index, item);
+            mOnCountChanged?.Trigger(Count);
+        }
+
+        public void Move(int oldIndex, int newIndex)
+        {
+            MoveItem(oldIndex, newIndex);
+        }
+
+        protected virtual void MoveItem(int oldIndex, int newIndex)
+        {
+            T item = this[oldIndex];
+            base.RemoveItem(oldIndex);
+            base.InsertItem(newIndex, item);
+
+            mOnMove?.Trigger(oldIndex, newIndex, item);
+        }
+
+        protected override void RemoveItem(int index)
+        {
+            T item = this[index];
+            base.RemoveItem(index);
+
+            mOnRemove?.Trigger(index, item);
+            mOnCountChanged?.Trigger(Count);
+        }
+
+        protected override void SetItem(int index, T item)
+        {
+            T oldItem = this[index];
+            base.SetItem(index, item);
+
+            mOnReplace?.Trigger(index, oldItem, item);
+        }
+    }
+
+    public static class BindableListExtensions
+    {
+        public static BindableList<T> ToBindableList<T>(this IEnumerable<T> self)
+        {
+            return new BindableList<T>(self);
+        }
+    }
+}

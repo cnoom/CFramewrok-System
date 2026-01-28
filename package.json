@@ -1,0 +1,19 @@
+﻿{
+  "name": "com.cnoom.cframework",
+  "displayName": "CFramework-Systems",
+  "version": "1.0.0",
+  "description": "基于CFramework-Core的系统拓展包",
+  "unity": "2021.3",
+  "unityRelease": "0f1",
+  "dependencies": {
+    "com.cnoom.cframework.core": "https://github.com/cnoom/CFramewrok-Core.git",
+    "com.unity.nuget.newtonsoft-json": "3.2.1",
+    "com.cysharp.unitask": "2.5.1",
+    "com.unity.addressables": "1.22.3"
+  },
+  "author": {
+    "name": "Cnoom",
+    "email": "cnoom@qq.com",
+    "url": "https://github.com/cnoom"
+  }
+}

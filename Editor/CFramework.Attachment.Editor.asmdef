@@ -1,0 +1,24 @@
+{
+  "name": "CFramework.Attachment.Editor",
+  "rootNamespace": "CFramework.Attachment",
+  "references": [
+    "GUID:9e24947de15b9834991c9d8411ea37cf",
+    "GUID:69448af7b92c7f342b298e06a37122aa",
+    "GUID:f51ebe6a0ceec4240a699833d6309b23",
+    "GUID:c01906c13a792d24fa049983f9be8a0a",
+    "GUID:24c8caa542b9f434da0a9764f121fd72",
+    "GUID:95156b635a78d0c4bbaaa863ff67f307",
+    "GUID:a04dedead64dbb442a2d064b1b0247d3"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}
