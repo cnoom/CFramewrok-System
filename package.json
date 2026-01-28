@@ -1,5 +1,5 @@
 ﻿{
-  "name": "com.cnoom.cframework",
+  "name": "com.cnoom.cframework.systems",
   "displayName": "CFramework-Systems",
   "version": "1.0.0",
   "description": "基于CFramework-Core的系统拓展包",
