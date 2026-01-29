@@ -13,6 +13,7 @@ using UnityEngine;
 namespace CFramework.Systems.UnityContainerSystem
 {
     [AutoModule("cUnity容器系统", "管理Unity游戏对象的生命周期和依赖")]
+    [ModuleDependsOn(typeof(IAssetsSystem))]
     public class UnityContainerSystemModule : IModule, IUnityContainerSystem, IRegisterAsync
     {
 
@@ -27,6 +28,7 @@ namespace CFramework.Systems.UnityContainerSystem
         public async UniTask RegisterAsync(CancellationToken cancellationToken)
         {
             // 直接通过 AssetsSystem 加载配置
+            await CF.Execute(new AssetsCommands.RegisterAssetReceiver(typeof(UnityContainerConfig)));
             config = await CF.Query<AssetsQueries.Asset, UnityContainerConfig>(
                 new AssetsQueries.Asset("CF_UnityContainerConfig"));
             _logger = CF.CreateLogger(config?.tag ?? nameof(IUnityContainerSystem));

@@ -1,3 +1,4 @@
+using CFramework.Attachment.com.cnoom.cframework.systems.Runtime.Attributes;
 using UnityEngine;
 
 namespace CFramework.Systems.UnityContainerSystem
@@ -39,6 +40,7 @@ namespace CFramework.Systems.UnityContainerSystem
     ///     Unity 容器系统配置
     /// </summary>
     [CreateAssetMenu(fileName = "UnityContainerConfig", menuName = "CFramework/Unity Container Config")]
+    [SingleAddressAsset("CF_UnityContainerConfig", "Default Local Group", "UnityContainerConfig")]
     public class UnityContainerConfig : ScriptableObject
     {
         [Tooltip("日志输出tag")]

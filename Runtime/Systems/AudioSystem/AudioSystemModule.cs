@@ -99,8 +99,8 @@ namespace CFramework.Systems.AudioSystem
         public async UniTask RegisterAsync(CancellationToken cancellationToken)
         {
             _logger = CF.CreateLogger("Audio");
-
-            CF.Execute(new AssetsCommands.RegisterAssetReceiver(typeof(AudioClip))).Forget();
+            
+            await CF.Execute(new AssetsCommands.RegisterAssetReceiver(typeof(AudioConfig)));
             // 直接通过 AssetsSystem 加载 AudioConfig
             _config = await CF.Query<AssetsQueries.Asset, AudioConfig>(
                 new AssetsQueries.Asset("AudioConfig"));

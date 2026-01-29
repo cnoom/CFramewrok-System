@@ -52,7 +52,7 @@ namespace CFramework.Editor.AddressablesTools
             var assetType = AssetDatabase.GetMainAssetTypeAtPath(assetPath);
             if (assetType == null) return false;
 
-            // 检查是否有 MonoScript
+            // 检查是否有 MonoScript（.cs 脚本文件）
             if (assetType == typeof(MonoScript))
             {
                 var script = AssetDatabase.LoadAssetAtPath<MonoScript>(assetPath);
@@ -63,6 +63,13 @@ namespace CFramework.Editor.AddressablesTools
 
                 // 检查类是否有 SingleAddressAssetAttribute
                 return HasSingleAddressAssetAttribute(scriptClass);
+            }
+
+            // 检查是否是 ScriptableObject 资产文件（.asset）
+            if (typeof(ScriptableObject).IsAssignableFrom(assetType))
+            {
+                // 检查资产类型是否有 SingleAddressAssetAttribute
+                return HasSingleAddressAssetAttribute(assetType);
             }
 
             return false;
@@ -116,22 +123,43 @@ namespace CFramework.Editor.AddressablesTools
 
         private static void ProcessAsset(string assetPath, AddressableAssetSettings settings)
         {
-            var script = AssetDatabase.LoadAssetAtPath<MonoScript>(assetPath);
-            if (script == null) return;
+            var assetType = AssetDatabase.GetMainAssetTypeAtPath(assetPath);
+            if (assetType == null) return;
 
-            var scriptClass = script.GetClass();
-            if (scriptClass == null) return;
+            SingleAddressAssetAttribute[] attributes = null;
+            Type assetClassType = null;
 
-            var attributes = (SingleAddressAssetAttribute[])scriptClass.GetCustomAttributes(
-                typeof(SingleAddressAssetAttribute), 
-                inherit: false);
+            // 处理 .cs 脚本文件
+            if (assetType == typeof(MonoScript))
+            {
+                var script = AssetDatabase.LoadAssetAtPath<MonoScript>(assetPath);
+                if (script == null) return;
+
+                assetClassType = script.GetClass();
+                if (assetClassType == null) return;
+
+                attributes = (SingleAddressAssetAttribute[])assetClassType.GetCustomAttributes(
+                    typeof(SingleAddressAssetAttribute),
+                    inherit: false);
+            }
+            // 处理 .asset 文件
+            else if (typeof(ScriptableObject).IsAssignableFrom(assetType))
+            {
+                assetClassType = assetType;
+                attributes = (SingleAddressAssetAttribute[])assetType.GetCustomAttributes(
+                    typeof(SingleAddressAssetAttribute),
+                    inherit: false);
+            }
 
             if (attributes == null || attributes.Length == 0)
                 return;
 
             foreach (var attr in attributes)
             {
-                AddToAddressables(scriptClass, attr, settings);
+                if (assetClassType != null)
+                {
+                    AddToAddressables(assetClassType, attr, settings);
+                }
             }
         }
 
@@ -146,9 +174,9 @@ namespace CFramework.Editor.AddressablesTools
                 return;
 
             foreach (string guid in guids)
-                {
+            {
                 string assetPath = AssetDatabase.GUIDToAssetPath(guid);
-                
+
                 // 跳过脚本文件本身
                 if (assetPath.EndsWith(".cs", StringComparison.OrdinalIgnoreCase))
                     continue;
@@ -156,8 +184,8 @@ namespace CFramework.Editor.AddressablesTools
                 try
                 {
                     // 确定组名
-                    string groupName = string.IsNullOrWhiteSpace(attr.Group) 
-                        ? "Default Local Group" 
+                    string groupName = string.IsNullOrWhiteSpace(attr.Group)
+                        ? "Default Local Group"
                         : attr.Group;
 
                     // 获取或创建组

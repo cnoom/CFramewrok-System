@@ -40,6 +40,7 @@ namespace CFramework.Systems.AssetsSystem.AssetsReceiver
             receiver.AssetsSystemModule = _assetsSystemModule;
             _receivers.Add(providerType, receiver);
             CF.RegisterHandler(receiver);
+            _logger.LogInfo($"注册AssetsProvider:{providerType.Name}");
         }
 
         public bool UnregisterReceiver(Type providerType)
