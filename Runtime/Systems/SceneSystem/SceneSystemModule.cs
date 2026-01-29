@@ -84,7 +84,7 @@ namespace CFramework.Systems.SceneSystem
             _scenes[sceneKey] = info;
 
             // 场景加载开始一律广播，由上层决定是否展示 Loading UI
-            CF.Broadcast(new SceneLoadingStarted(sceneKey)).Forget();
+            CF.Broadcast(new SceneBroadcasts.SceneLoadingStarted(sceneKey)).Forget();
 
             AsyncOperationHandle<SceneInstance> handle = default;
             try
@@ -102,7 +102,7 @@ namespace CFramework.Systems.SceneSystem
                     float progress = handle.PercentComplete;
                     info.LastProgress = progress;
                     _scenes[sceneKey] = info;
-                    CF.Broadcast(new SceneLoadingProgress(sceneKey, progress)).Forget();
+                    CF.Broadcast(new SceneBroadcasts.SceneLoadingProgress(sceneKey, progress)).Forget();
                     await UniTask.Yield(PlayerLoopTiming.Update);
                 }
 
@@ -118,7 +118,7 @@ namespace CFramework.Systems.SceneSystem
                 _currentSceneKey = sceneKey;
                 _loadingSceneKey = null;
 
-                CF.Broadcast(new SceneLoaded(sceneKey)).Forget();
+                CF.Broadcast(new SceneBroadcasts.SceneLoaded(sceneKey)).Forget();
             }
             catch (Exception ex)
             {
@@ -129,7 +129,7 @@ namespace CFramework.Systems.SceneSystem
                 _loadingSceneKey = null;
 
                 _logger?.LogException(ex);
-                CF.Broadcast(new SceneLoadFailed(sceneKey, ex.Message)).Forget();
+                CF.Broadcast(new SceneBroadcasts.SceneLoadFailed(sceneKey, ex.Message)).Forget();
             }
         }
 
