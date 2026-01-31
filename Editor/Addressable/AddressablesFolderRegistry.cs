@@ -21,16 +21,14 @@ namespace CFramework.Editor.AddressablesTools
         [InspectorName("嵌套分组")]
         NestedByGroup,
         [InspectorName("按组拆分")]
-        SplitFilesByGroup,
-        [InspectorName("部分合并")]
-        PartialCombined
+        SplitFilesByGroup
     }
 
     [Serializable]
     public class FolderRecord
     {
         public string folderGUID;
-        public string groupName = "Default Local Group";
+        public string groupName = "Default Group";
         public List<string> labels = new List<string>();
         public string addressPrefix = string.Empty;
 
@@ -74,11 +72,10 @@ namespace CFramework.Editor.AddressablesTools
         public List<FolderRecord> records = new List<FolderRecord>();
 
         // 全局默认配置
-        public string defaultGroupName = "Default Local Group";
+        public string defaultGroupName = "Default Group";
         public string codeGenNamespace = "CFramework.Generate";
         public string codeGenClassName = "AddressKeys";
         public CodeGenStructure codeGenStructure = CodeGenStructure.NestedByGroup;
-        protected string DefaultAssetPath => CFDirectoryKey.FrameworkEditorConfig + "/AddressablesFolderRegistry.asset";
 
         public bool IsRecorded(string folderGUID)
         {

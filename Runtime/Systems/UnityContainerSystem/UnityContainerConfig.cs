@@ -39,8 +39,7 @@ namespace CFramework.Systems.UnityContainerSystem
     /// <summary>
     ///     Unity 容器系统配置
     /// </summary>
-    [CreateAssetMenu(fileName = "UnityContainerConfig", menuName = "CFramework/Unity Container Config")]
-    [SingleAddressAsset("CF_UnityContainerConfig", "Default Local Group", "UnityContainerConfig")]
+    [SingleAddressAsset("UnityContainerConfig", "Configs")]
     public class UnityContainerConfig : ScriptableObject
     {
         [Tooltip("日志输出tag")]

@@ -63,9 +63,6 @@ namespace CFramework.Editor.AddressablesTools
                 case CodeGenStructure.SplitFilesByGroup:
                     GenerateSplitFilesByGroup(outputPath, ns, className, groupToEntries, generatedFileHashes);
                     break;
-                case CodeGenStructure.PartialCombined:
-                    GeneratePartialCombined(outputPath, ns, className, groupToEntries, generatedFileHashes);
-                    break;
                 default:
                     GenerateNestedByGroup(outputPath, ns, className, groupToEntries, generatedFileHashes);
                     break;
@@ -195,18 +192,6 @@ namespace CFramework.Editor.AddressablesTools
         private static void GenerateSplitFilesByGroup(string outputDir, string ns, string className,
             SortedDictionary<string, List<AddressableAssetEntry>> groups, Dictionary<string, string> generatedFileHashes)
         {
-            string mainFile = Path.Combine(outputDir, className + ".cs");
-            CodeGenTemplate mainTemplate =
-                new CodeGenTemplate("SplitByGroupMain", Templates.TemplateSplitByGroupMain);
-            CodeGenContext mainContext = new CodeGenContext()
-                .Set("Namespace", ns)
-                .Set("ClassName", className);
-
-            string mainContent = CodeGen.Render(mainTemplate, mainContext);
-            string mainHash = ComputeHash(mainContent);
-            CodeGenUtility.WriteIfChanged(mainFile, mainContent);
-            TrackGeneratedFile(mainFile, mainHash, generatedFileHashes);
-
             foreach (KeyValuePair<string, List<AddressableAssetEntry>> kv in groups)
             {
                 string groupClass = SanitizeIdentifierLength(kv.Key, s => IdentifierUtility.ToTypeIdentifier(s));
@@ -230,59 +215,6 @@ namespace CFramework.Editor.AddressablesTools
 
                 CodeGenTemplate template =
                     new CodeGenTemplate("SplitByGroup", Templates.TemplateSplitByGroup);
-                CodeGenContext context = new CodeGenContext()
-                    .Set("Namespace", ns)
-                    .Set("ClassName", className)
-                    .Set("GroupClassName", groupClass)
-                    .Set("Entries", entries);
-
-                string content = CodeGen.Render(template, context);
-                string hash = ComputeHash(content);
-                CodeGenUtility.WriteIfChanged(file, content);
-                TrackGeneratedFile(file, hash, generatedFileHashes);
-            }
-        }
-
-        private static void GeneratePartialCombined(string outputDir, string ns, string className,
-            SortedDictionary<string, List<AddressableAssetEntry>> groups, Dictionary<string, string> generatedFileHashes)
-        {
-            string mainFile = Path.Combine(outputDir, className + ".cs");
-            CodeGenTemplate mainTemplate =
-                new CodeGenTemplate("SplitByGroupMain", Templates.TemplateSplitByGroupMain);
-            CodeGenContext mainContext = new CodeGenContext()
-                .Set("Namespace", ns)
-                .Set("ClassName", className);
-
-            string mainContent = CodeGen.Render(mainTemplate, mainContext);
-            string mainHash = ComputeHash(mainContent);
-            CodeGenUtility.WriteIfChanged(mainFile, mainContent);
-            TrackGeneratedFile(mainFile, mainHash, generatedFileHashes);
-
-            HashSet<string> globalKeywords = IdentifierUtility.CSharpKeywords;
-            HashSet<string> globalUsedNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-
-            foreach (KeyValuePair<string, List<AddressableAssetEntry>> kv in groups)
-            {
-                string groupClass = SanitizeIdentifierLength(kv.Key, s => IdentifierUtility.ToTypeIdentifier(s));
-                string file = Path.Combine(outputDir, $"{className}.{groupClass}.cs");
-                List<Dictionary<string, object>> entries = new List<Dictionary<string, object>>();
-
-                foreach (AddressableAssetEntry e in kv.Value.OrderBy(e => e.address, StringComparer.Ordinal))
-                {
-                    string unique = GenerateUniqueIdentifier(e.address, globalKeywords, globalUsedNames);
-                    entries.Add(new Dictionary<string, object>
-                    {
-                        {
-                            "Address", e.address
-                        },
-                        {
-                            "Identifier", unique
-                        }
-                    });
-                }
-
-                CodeGenTemplate template =
-                    new CodeGenTemplate("PartialCombined", Templates.TemplatePartialCombined);
                 CodeGenContext context = new CodeGenContext()
                     .Set("Namespace", ns)
                     .Set("ClassName", className)
