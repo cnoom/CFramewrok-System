@@ -22,7 +22,7 @@ namespace CFramework.Editor.UISystem
         }
 
         /// <summary>
-        /// 生成 UI 动画常量
+        ///     生成 UI 动画常量
         /// </summary>
         [MenuItem(CFMenuKey.Systems + "/UI/生成动画常量", priority = 5201)]
         public static void GenerateTransitionConstants()

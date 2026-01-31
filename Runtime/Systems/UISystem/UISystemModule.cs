@@ -53,7 +53,7 @@ namespace CFramework.Systems.UISystem
             // 直接通过 AssetsSystem 加载 UIConfig
             _config = await CF.Query<AssetsQueries.Asset, UIConfig>(
                 new AssetsQueries.Asset("UIConfig"));
-            if (!_config)
+            if(!_config)
             {
                 CF.LogWarning("UIConfig 未找到，使用默认配置。");
                 _config = ScriptableObject.CreateInstance<UIConfig>();
@@ -61,7 +61,7 @@ namespace CFramework.Systems.UISystem
 
             _logger = CF.CreateLogger(_config.logTag);
             // Apply logging config
-            if (_config.enableLogs)
+            if(_config.enableLogs)
             {
                 CF.EnableLogger(_config.logTag);
                 CF.SetLogLevel(_config.logLevel, _config.logTag);
@@ -102,7 +102,7 @@ namespace CFramework.Systems.UISystem
             _concurrencySemaphore?.Dispose();
 
             // 释放 UIConfig 引用
-            if (_config)
+            if(_config)
             {
                 CF.Execute(new AssetsCommands.ReleaseAsset<ScriptableObject>("CF_UIConfig")).Forget();
             }
@@ -115,7 +115,7 @@ namespace CFramework.Systems.UISystem
             try
             {
                 Type handlerType = Type.GetType("CFramework.Systems.UISystem.IUIErrorHandler");
-                if (handlerType != null)
+                if(handlerType != null)
                 {
                     // 这里简化处理，实际可以通过ModuleManager或依赖注入获取
                     // 用户可以通过在RegisterAsync中调用CF.RegisterHandler注册
@@ -159,12 +159,12 @@ namespace CFramework.Systems.UISystem
         private async UniTask<ErrorHandlingResult> TryHandleError(UIErrorContext error, int retryCount = 0)
         {
             // 1. 使用自定义错误处理器
-            if (_errorHandler != null)
+            if(_errorHandler != null)
             {
                 try
                 {
                     ErrorHandlingResult result = await _errorHandler.HandleError(error, CancellationTokenSource.Token);
-                    if (result != ErrorHandlingResult.Abort)
+                    if(result != ErrorHandlingResult.Abort)
                     {
                         _logger?.LogInfo($"自定义错误处理器返回: {result}");
                         return result;
@@ -177,14 +177,14 @@ namespace CFramework.Systems.UISystem
             }
 
             // 2. 根据严重级自动处理
-            switch (error.Severity)
+            switch(error.Severity)
             {
                 case UIErrorSeverity.Recoverable:
                     _logger?.LogWarning($"可恢复错误，跳过: {error.Exception.Message}");
                     return ErrorHandlingResult.Continue;
 
                 case UIErrorSeverity.Retryable:
-                    if (retryCount < MaxRetryCount)
+                    if(retryCount < MaxRetryCount)
                     {
                         _logger?.LogWarning($"重试中 ({retryCount + 1}/{MaxRetryCount}): {error.Operation}");
                         // 指数退避延迟
@@ -202,7 +202,7 @@ namespace CFramework.Systems.UISystem
             }
 
             // 广播失败事件
-            if (!string.IsNullOrEmpty(error.ViewKey))
+            if(!string.IsNullOrEmpty(error.ViewKey))
             {
                 CF.Broadcast(new UIBroadcasts.ViewOpenFailed(
                     error.ViewKey,
@@ -225,11 +225,11 @@ namespace CFramework.Systems.UISystem
         [CommandHandler]
         private async UniTask OnOpenByType(UICommands.OpenViewByType cmd, CancellationToken token)
         {
-            if (cmd.ViewType == null) return;
+            if(cmd.ViewType == null) return;
 
             // 从Config获取address
             string key = _config.GetUiAddressByType(cmd.ViewType);
-            if (string.IsNullOrEmpty(key))
+            if(string.IsNullOrEmpty(key))
             {
                 _logger?.LogError($"未找到类型 {cmd.ViewType.Name} 对应的UI配置");
                 CF.Broadcast(new UIBroadcasts.ViewOpenFailed(cmd.ViewType.Name, cmd.Layer, "Type not configured"))
@@ -245,7 +245,7 @@ namespace CFramework.Systems.UISystem
         private async UniTask DoOpenAsync(string key, string layer, IViewData data,
             string transitionName, float? seconds, bool bringToTop, CancellationToken token)
         {
-            if (string.IsNullOrEmpty(key)) return;
+            if(string.IsNullOrEmpty(key)) return;
 
             var retryCount = 0;
             while (true)
@@ -255,7 +255,7 @@ namespace CFramework.Systems.UISystem
                 var added = false;
                 try
                 {
-                    if (_config.respectGlobalPause && Mathf.Approximately(Time.timeScale, 0f))
+                    if(_config.respectGlobalPause && Mathf.Approximately(Time.timeScale, 0f))
                     {
                         _logger?.LogInfo("UI open blocked due to global pause");
                         CF.Broadcast(new UIBroadcasts.ViewOpenFailed(key, layer, "Global paused")).Forget();
@@ -263,7 +263,7 @@ namespace CFramework.Systems.UISystem
                     }
 
                     added = _openingKeys.Add(key);
-                    if (!added)
+                    if(!added)
                     {
                         _logger?.LogWarning($"视图正在打开中: {key}");
                         return;
@@ -273,7 +273,7 @@ namespace CFramework.Systems.UISystem
 
                     // 检查是否已存在
                     IViewInstance existing = _layerManager.FindTopByKey(resolvedLayer, key);
-                    if (_config.preventReplaySameView && existing != null)
+                    if(_config.preventReplaySameView && existing != null)
                     {
                         UICommands.OpenView cmd = new UICommands.OpenView(key, resolvedLayer, data, transitionName,
                             seconds, bringToTop);
@@ -283,7 +283,7 @@ namespace CFramework.Systems.UISystem
 
                     // 尝试从池获取
                     IViewInstance instance = _pool.Get(key);
-                    if (instance != null)
+                    if(instance != null)
                     {
                         UICommands.OpenView cmd = new UICommands.OpenView(key, resolvedLayer, data, transitionName,
                             seconds, bringToTop);
@@ -314,14 +314,14 @@ namespace CFramework.Systems.UISystem
 
                     ErrorHandlingResult result = await TryHandleError(error, retryCount);
 
-                    if (result == ErrorHandlingResult.Retry)
+                    if(result == ErrorHandlingResult.Retry)
                     {
                         retryCount++;
                         _concurrencySemaphore.Release();
                         continue;
                     }
 
-                    if (result == ErrorHandlingResult.Continue)
+                    if(result == ErrorHandlingResult.Continue)
                     {
                         // 跳过错误继续
                     }
@@ -330,7 +330,7 @@ namespace CFramework.Systems.UISystem
                 }
                 finally
                 {
-                    if (added) _openingKeys.Remove(key);
+                    if(added) _openingKeys.Remove(key);
                     _concurrencySemaphore.Release();
                 }
 
@@ -342,22 +342,22 @@ namespace CFramework.Systems.UISystem
         [CommandHandler]
         private async UniTask OnCloseById(UICommands.CloseViewById cmd, CancellationToken token)
         {
-            if (string.IsNullOrEmpty(cmd.Id)) return;
-            if (!_instances.TryGetValue(cmd.Id, out IViewInstance inst)) return;
+            if(string.IsNullOrEmpty(cmd.Id)) return;
+            if(!_instances.TryGetValue(cmd.Id, out IViewInstance inst)) return;
             await InternalCloseAsync(inst, cmd.Seconds);
         }
 
         [CommandHandler]
         private async UniTask OnCloseByKey(UICommands.CloseViewByKey cmd, CancellationToken token)
         {
-            if (string.IsNullOrEmpty(cmd.Key)) return;
+            if(string.IsNullOrEmpty(cmd.Key)) return;
             IViewInstance inst = _layerManager.FindTopByKey(null, cmd.Key);
-            if (inst == null)
+            if(inst == null)
             {
                 // 如果在层顶没找到，查找任意位置
                 foreach (KeyValuePair<string, IViewInstance> kv in _instances)
                 {
-                    if (kv.Value.Key == cmd.Key)
+                    if(kv.Value.Key == cmd.Key)
                     {
                         inst = kv.Value;
                         break;
@@ -365,7 +365,7 @@ namespace CFramework.Systems.UISystem
                 }
             }
 
-            if (inst == null) return;
+            if(inst == null) return;
             await InternalCloseAsync(inst, cmd.Seconds);
         }
 
@@ -374,17 +374,17 @@ namespace CFramework.Systems.UISystem
         {
             string layer = _layerManager.ResolveLayer(cmd.Layer, null);
             IViewInstance top = _layerManager.GetTop(layer);
-            if (top == null) return;
+            if(top == null) return;
             await InternalCloseAsync(top, cmd.Seconds);
         }
 
         [CommandHandler]
         private async UniTask OnHide(UICommands.HideView cmd, CancellationToken token)
         {
-            if (string.IsNullOrEmpty(cmd.Id)) return;
-            if (!_instances.TryGetValue(cmd.Id, out IViewInstance inst)) return;
-            if (!inst.Visible) return;
-            if (!inst.Root) return;
+            if(string.IsNullOrEmpty(cmd.Id)) return;
+            if(!_instances.TryGetValue(cmd.Id, out IViewInstance inst)) return;
+            if(!inst.Visible) return;
+            if(!inst.Root) return;
 
             try
             {
@@ -403,9 +403,9 @@ namespace CFramework.Systems.UISystem
         [CommandHandler]
         private async UniTask OnShow(UICommands.ShowView cmd, CancellationToken token)
         {
-            if (string.IsNullOrEmpty(cmd.Id)) return;
-            if (!_instances.TryGetValue(cmd.Id, out IViewInstance inst)) return;
-            if (inst.Visible) return;
+            if(string.IsNullOrEmpty(cmd.Id)) return;
+            if(!_instances.TryGetValue(cmd.Id, out IViewInstance inst)) return;
+            if(inst.Visible) return;
 
             try
             {
@@ -427,12 +427,12 @@ namespace CFramework.Systems.UISystem
         [QueryHandler]
         private UniTask<bool> OnIsOpen(UIQueries.IsOpen q, CancellationToken token)
         {
-            if (!string.IsNullOrEmpty(q.Id)) return UniTask.FromResult(_instances.ContainsKey(q.Id));
-            if (!string.IsNullOrEmpty(q.Key))
+            if(!string.IsNullOrEmpty(q.Id)) return UniTask.FromResult(_instances.ContainsKey(q.Id));
+            if(!string.IsNullOrEmpty(q.Key))
             {
                 foreach (IViewInstance inst in _instances.Values)
                 {
-                    if (inst.Key == q.Key)
+                    if(inst.Key == q.Key)
                         return UniTask.FromResult(true);
                 }
 
@@ -447,19 +447,19 @@ namespace CFramework.Systems.UISystem
         {
             string layer = _layerManager.ResolveLayer(q.Layer, null);
             IViewInstance top = _layerManager.GetTop(layer);
-            if (top == null) return default;
+            if(top == null) return default;
             return UniTask.FromResult(new ViewInfo(top.Id, top.Key, layer, top.Visible));
         }
 
         [QueryHandler]
         private UniTask<ViewInfo[]> OnGetOpenViews(UIQueries.GetOpenViews q, CancellationToken token)
         {
-            if (!string.IsNullOrEmpty(q.Layer))
+            if(!string.IsNullOrEmpty(q.Layer))
             {
                 string layer = _layerManager.ResolveLayer(q.Layer, null);
                 List<IViewInstance> list = GetAllInLayer(layer);
                 ViewInfo[] arr = new ViewInfo[list.Count];
-                for (var i = 0; i < list.Count; i++)
+                for(var i = 0; i < list.Count; i++)
                     arr[i] = new ViewInfo(list[i].Id, list[i].Key, layer, list[i].Visible);
                 return UniTask.FromResult(arr);
             }
@@ -480,10 +480,10 @@ namespace CFramework.Systems.UISystem
         /// <summary>获取指定UI的池化最大数量</summary>
         private int GetPoolSize(string key)
         {
-            if (!_config.enableViewPool) return 0;
+            if(!_config.enableViewPool) return 0;
 
             UiInfo uiInfo = _config.GetUiInfoByKey(key);
-            if (uiInfo != null && uiInfo.disablePooling) return 0;
+            if(uiInfo != null && uiInfo.disablePooling) return 0;
 
             return uiInfo?.maxPoolSize ?? _config.viewPoolMaxSize;
         }
@@ -491,7 +491,7 @@ namespace CFramework.Systems.UISystem
         /// <summary>处理已存在的视图</summary>
         private async UniTask HandleExistingViewAsync(IViewInstance existing, UICommands.OpenView cmd)
         {
-            if (!existing.Visible)
+            if(!existing.Visible)
             {
                 // 隐藏的视图，重新显示
                 await _transitionManager.PlayInAsync(existing.Root, existing.TransitionName,
@@ -501,7 +501,7 @@ namespace CFramework.Systems.UISystem
                 await _lifecycleInvoker.CallShowAfterAsync(existing, cmd.Data, CancellationTokenSource.Token);
                 CF.Broadcast(new UIBroadcasts.ViewShown(existing.Id, existing.Key, existing.Layer)).Forget();
             }
-            else if (cmd.BringToTop)
+            else if(cmd.BringToTop)
             {
                 // 已显示且要求置顶
                 _layerManager.MoveToTop(existing);
@@ -553,7 +553,7 @@ namespace CFramework.Systems.UISystem
                 );
 
                 ErrorHandlingResult result = await TryHandleError(error);
-                if (result == ErrorHandlingResult.Abort)
+                if(result == ErrorHandlingResult.Abort)
                 {
                     throw;
                 }
@@ -561,7 +561,7 @@ namespace CFramework.Systems.UISystem
                 return;
             }
 
-            if (!prefab)
+            if(!prefab)
             {
                 UIErrorContext error = new UIErrorContext(
                     "LoadAsset",
@@ -622,10 +622,10 @@ namespace CFramework.Systems.UISystem
         {
             try
             {
-                if (!inst.Root) return;
+                if(!inst.Root) return;
 
                 // 播放退出动画
-                if (inst.Visible)
+                if(inst.Visible)
                 {
                     float seconds = secondsOverride ?? inst.TransitionSeconds;
                     await _transitionManager.PlayOutAsync(inst.Root, inst.TransitionName, seconds);
@@ -648,7 +648,7 @@ namespace CFramework.Systems.UISystem
                 await _pool.ReturnAsync(inst, GetPoolSize(inst.Key));
 
                 // 广播关闭事件
-                if (CF.IsInitialized)
+                if(CF.IsInitialized)
                 {
                     CF.Broadcast(new UIBroadcasts.ViewClosed(inst.Id, inst.Key, inst.Layer)).Forget();
                 }
@@ -665,7 +665,7 @@ namespace CFramework.Systems.UISystem
             List<IViewInstance> result = new List<IViewInstance>();
             foreach (IViewInstance inst in _instances.Values)
             {
-                if (inst.Layer == layer)
+                if(inst.Layer == layer)
                     result.Add(inst);
             }
 

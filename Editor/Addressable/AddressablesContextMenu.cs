@@ -1,4 +1,5 @@
 using System.IO;
+using CFramework.Core.Editor.Base;
 using CFramework.Core.Editor.Utilities;
 using UnityEditor;
 using UnityEngine;
@@ -7,7 +8,7 @@ namespace CFramework.Editor.AddressablesTools
 {
     public static class AddressablesContextMenu
     {
-        [MenuItem("Assets/CFramework/Addressables/记录文件夹", true)]
+        [MenuItem(CFMenuKey.Systems + "Addressables/记录文件夹", true)]
         private static bool ValidateRecord()
         {
             Object[] selectedObjects = Selection.GetFiltered(typeof(Object), SelectionMode.Assets);
@@ -27,7 +28,7 @@ namespace CFramework.Editor.AddressablesTools
             return true;
         }
 
-        [MenuItem("Assets/CFramework/Addressables/记录文件夹")]
+        [MenuItem(CFMenuKey.Systems + "Addressables/记录文件夹")]
         private static void RecordFolder()
         {
             Object[] selectedObjects = Selection.GetFiltered(typeof(Object), SelectionMode.Assets);
@@ -98,7 +99,7 @@ namespace CFramework.Editor.AddressablesTools
             return string.IsNullOrEmpty(trimmed) ? "Label" : trimmed.Replace(' ', '_');
         }
 
-        [MenuItem("Assets/CFramework/Addressables/取消记录", true)]
+        [MenuItem(CFMenuKey.Systems + "Addressables/取消记录", true)]
         private static bool ValidateUnrecord()
         {
             Object[] selectedObjects = Selection.GetFiltered(typeof(Object), SelectionMode.Assets);
@@ -119,16 +120,16 @@ namespace CFramework.Editor.AddressablesTools
             return true;
         }
 
-        [MenuItem("Assets/CFramework/Addressables/取消记录")]
+        [MenuItem(CFMenuKey.Systems + "Addressables/取消记录")]
         private static void UnrecordFolder()
         {
             Object[] selectedObjects = Selection.GetFiltered(typeof(Object), SelectionMode.Assets);
             foreach (Object obj in selectedObjects)
             {
                 string path = AssetDatabase.GetAssetPath(obj);
-            string guid = AssetDatabase.AssetPathToGUID(path);
-            AddressableConfig reg = ConfigUtility.GetOrCreateEditorConfig<AddressableConfig>();
-            FolderRecord rec = reg.GetRecord(guid);
+                string guid = AssetDatabase.AssetPathToGUID(path);
+                AddressableConfig reg = ConfigUtility.GetOrCreateEditorConfig<AddressableConfig>();
+                FolderRecord rec = reg.GetRecord(guid);
                 if(rec != null)
                 {
                     if(EditorUtility.DisplayDialog("取消记录", "是否从记录列表移除并删除该文件夹下的 Addressables 条目？", "是", "否"))
@@ -144,7 +145,7 @@ namespace CFramework.Editor.AddressablesTools
             }
         }
 
-        [MenuItem("Assets/CFramework/Addressables/Sync Recorded Folders")]
+        [MenuItem(CFMenuKey.Systems + "Addressables/同步全部")]
         private static void SyncAll()
         {
             AddressableConfig reg = ConfigUtility.GetOrCreateEditorConfig<AddressableConfig>();
@@ -152,7 +153,7 @@ namespace CFramework.Editor.AddressablesTools
             EditorUtility.DisplayDialog("同步完成", "已同步所有记录的文件夹。", "确定");
         }
 
-        [MenuItem("Assets/CFramework/Addressables/Generate Address Keys")]
+        [MenuItem(CFMenuKey.Systems + "Addressables/生成常量")]
         private static void GenerateKeys()
         {
             AddressableConfig reg = ConfigUtility.GetOrCreateEditorConfig<AddressableConfig>();
@@ -160,7 +161,7 @@ namespace CFramework.Editor.AddressablesTools
             EditorUtility.DisplayDialog("生成完成", "已生成地址常量。", "确定");
         }
 
-        [MenuItem("Assets/CFramework/Addressables/Sync Single Address Assets")]
+        [MenuItem(CFMenuKey.Systems + "Addressables/Sync Single Address Assets")]
         private static void SyncSingleAddressAssets()
         {
             SingleAddressAssetProcessor.ProcessAll();

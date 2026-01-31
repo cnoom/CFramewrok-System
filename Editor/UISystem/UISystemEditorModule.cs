@@ -1,4 +1,3 @@
-using System;
 using CFramework.Core.Editor.Base;
 using CFramework.Core.Editor.EditorFramework;
 using CFramework.Core.Editor.EditorFramework.Interfaces;
@@ -83,7 +82,7 @@ namespace CFramework.Editor.UISystem
             var configPath = $"{CFDirectoryKey.FrameworkConfig}/UIConfig.asset";
             UIConfig config = AssetDatabase.LoadAssetAtPath<UIConfig>(configPath);
 
-            if (config != null) return;
+            if(config != null) return;
             UIConfig uiConfig = ScriptableObject.CreateInstance<UIConfig>();
 
             CFDirectoryUtility.EnsureFolder(CFDirectoryKey.FrameworkConfig);

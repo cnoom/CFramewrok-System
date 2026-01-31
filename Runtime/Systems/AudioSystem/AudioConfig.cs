@@ -5,7 +5,7 @@ using UnityEngine;
 namespace CFramework.Systems.AudioSystem
 {
     // 可作为 ScriptableObject，也允许通过构造函数传入POCO配置
-    [SingleAddressAsset("AudioConfig","Configs")]
+    [SingleAddressAsset("AudioConfig", "Configs")]
     public class AudioConfig : ScriptableObject
     {
         [Header("Logging")]
@@ -13,7 +13,7 @@ namespace CFramework.Systems.AudioSystem
         public bool enableLogs = true;
         public ICFLogger.Level logLevel = ICFLogger.Level.Info;
 
-        [Header("Volumes (0-1)"), Range(0, 1)] 
+        [Header("Volumes (0-1)"), Range(0, 1)]
         public float masterVolume = 1f;
         [Range(0, 1)]
         public float musicVolume = 1f;

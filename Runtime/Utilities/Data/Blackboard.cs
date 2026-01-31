@@ -51,7 +51,7 @@ namespace CFramework.Data
 
         public T GetOrDefault<T>(int key, T defaultValue = default)
         {
-            return TryGetData<T>(key, out T value) ? value : defaultValue;
+            return TryGetData(key, out T value) ? value : defaultValue;
         }
 
         public bool ContainsKey(int key)

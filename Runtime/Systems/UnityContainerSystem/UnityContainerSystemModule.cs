@@ -12,8 +12,7 @@ using UnityEngine;
 
 namespace CFramework.Systems.UnityContainerSystem
 {
-    [AutoModule("cUnity容器系统", "管理Unity游戏对象的生命周期和依赖")]
-    [ModuleDependsOn(typeof(IAssetsSystem))]
+    [AutoModule("cUnity容器系统", "管理Unity游戏对象的生命周期和依赖"), ModuleDependsOn(typeof(IAssetsSystem))]
     public class UnityContainerSystemModule : IModule, IUnityContainerSystem, IRegisterAsync
     {
 

@@ -23,7 +23,7 @@ namespace CFramework.Systems.UISystem
         public int? maxPoolSize;
     }
 
-    [SingleAddressAsset("UIConfig","Configs")]
+    [SingleAddressAsset("UIConfig", "Configs")]
     public class UIConfig : ScriptableObject
     {
         [Header("Logging")]
@@ -49,7 +49,6 @@ namespace CFramework.Systems.UISystem
         public float defaultTransitionSeconds = 0.2f;
 
         [Header("Behavior"), Tooltip("是否尊重全局暂停")]
-        
         public bool respectGlobalPause = true;
         [Tooltip("是否阻止重复打开相同界面")]
         public bool preventReplaySameView = true;

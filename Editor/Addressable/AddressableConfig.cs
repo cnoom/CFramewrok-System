@@ -74,7 +74,7 @@ namespace CFramework.Editor.AddressablesTools
         public List<FolderRecord> records = new List<FolderRecord>();
 
         // 全局默认配置
-        public string defaultGroupName = "Default Group";
+        public string defaultGroupName = "Default Local Group";
         public string codeGenNamespace = "CFramework.Generate";
         public string codeGenClassName = "AddressKeys";
         public CodeGenStructure codeGenStructure = CodeGenStructure.NestedByGroup;

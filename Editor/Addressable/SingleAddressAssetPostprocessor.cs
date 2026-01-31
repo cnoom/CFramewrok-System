@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using CFramework.Attachment.com.cnoom.cframework.systems.Runtime.Attributes;
 using UnityEditor;
 using UnityEditor.AddressableAssets;
@@ -10,8 +9,8 @@ using UnityEngine;
 namespace CFramework.Editor.AddressablesTools
 {
     /// <summary>
-    /// SingleAddressAssetAttribute 后处理器
-    /// 自动将带有 SingleAddressAssetAttribute 的资源添加到 Addressables 系统中
+    ///     SingleAddressAssetAttribute 后处理器
+    ///     自动将带有 SingleAddressAssetAttribute 的资源添加到 Addressables 系统中
     /// </summary>
     public class SingleAddressAssetPostprocessor : AssetPostprocessor
     {
@@ -28,19 +27,19 @@ namespace CFramework.Editor.AddressablesTools
             string[] movedAssets,
             string[] movedFromAssetPaths)
         {
-            if (importedAssets == null || importedAssets.Length == 0)
+            if(importedAssets == null || importedAssets.Length == 0)
                 return;
 
             // 收集需要处理的资源
             foreach (string assetPath in importedAssets)
             {
-                if (ShouldProcessAsset(assetPath))
+                if(ShouldProcessAsset(assetPath))
                 {
                     s_PendingImports.Add(assetPath);
                 }
             }
 
-            if (s_PendingImports.Count > 0)
+            if(s_PendingImports.Count > 0)
             {
                 ScheduleProcessing();
             }
@@ -49,24 +48,24 @@ namespace CFramework.Editor.AddressablesTools
         private static bool ShouldProcessAsset(string assetPath)
         {
             // 只处理 ScriptableObject 或 MonoBehaviour 类型的资源
-            var assetType = AssetDatabase.GetMainAssetTypeAtPath(assetPath);
-            if (assetType == null) return false;
+            Type assetType = AssetDatabase.GetMainAssetTypeAtPath(assetPath);
+            if(assetType == null) return false;
 
             // 检查是否有 MonoScript（.cs 脚本文件）
-            if (assetType == typeof(MonoScript))
+            if(assetType == typeof(MonoScript))
             {
-                var script = AssetDatabase.LoadAssetAtPath<MonoScript>(assetPath);
-                if (script == null) return false;
+                MonoScript script = AssetDatabase.LoadAssetAtPath<MonoScript>(assetPath);
+                if(script == null) return false;
 
-                var scriptClass = script.GetClass();
-                if (scriptClass == null) return false;
+                Type scriptClass = script.GetClass();
+                if(scriptClass == null) return false;
 
                 // 检查类是否有 SingleAddressAssetAttribute
                 return HasSingleAddressAssetAttribute(scriptClass);
             }
 
             // 检查是否是 ScriptableObject 资产文件（.asset）
-            if (typeof(ScriptableObject).IsAssignableFrom(assetType))
+            if(typeof(ScriptableObject).IsAssignableFrom(assetType))
             {
                 // 检查资产类型是否有 SingleAddressAssetAttribute
                 return HasSingleAddressAssetAttribute(assetType);
@@ -77,18 +76,18 @@ namespace CFramework.Editor.AddressablesTools
 
         private static bool HasSingleAddressAssetAttribute(Type type)
         {
-            if (type == null) return false;
+            if(type == null) return false;
 
-            var attributes = type.GetCustomAttributes(
-                typeof(SingleAddressAssetAttribute), 
-                inherit: false);
+            object[] attributes = type.GetCustomAttributes(
+                typeof(SingleAddressAssetAttribute),
+                false);
 
             return attributes != null && attributes.Length > 0;
         }
 
         private static void ScheduleProcessing()
         {
-            if (!s_ProcessingPending)
+            if(!s_ProcessingPending)
             {
                 s_ProcessingPending = true;
                 EditorApplication.delayCall += ProcessPendingAssets;
@@ -100,11 +99,11 @@ namespace CFramework.Editor.AddressablesTools
             s_ProcessingPending = false;
             EditorApplication.delayCall -= ProcessPendingAssets;
 
-            if (s_PendingImports.Count == 0)
+            if(s_PendingImports.Count == 0)
                 return;
 
-            var settings = AddressableAssetSettingsDefaultObject.Settings;
-            if (settings == null)
+            AddressableAssetSettings settings = AddressableAssetSettingsDefaultObject.Settings;
+            if(settings == null)
             {
                 Debug.LogWarning("[SingleAddressAsset] 未找到 AddressableAssetSettings，无法自动添加资源。");
                 s_PendingImports.Clear();
@@ -123,40 +122,40 @@ namespace CFramework.Editor.AddressablesTools
 
         private static void ProcessAsset(string assetPath, AddressableAssetSettings settings)
         {
-            var assetType = AssetDatabase.GetMainAssetTypeAtPath(assetPath);
-            if (assetType == null) return;
+            Type assetType = AssetDatabase.GetMainAssetTypeAtPath(assetPath);
+            if(assetType == null) return;
 
             SingleAddressAssetAttribute[] attributes = null;
             Type assetClassType = null;
 
             // 处理 .cs 脚本文件
-            if (assetType == typeof(MonoScript))
+            if(assetType == typeof(MonoScript))
             {
-                var script = AssetDatabase.LoadAssetAtPath<MonoScript>(assetPath);
-                if (script == null) return;
+                MonoScript script = AssetDatabase.LoadAssetAtPath<MonoScript>(assetPath);
+                if(script == null) return;
 
                 assetClassType = script.GetClass();
-                if (assetClassType == null) return;
+                if(assetClassType == null) return;
 
                 attributes = (SingleAddressAssetAttribute[])assetClassType.GetCustomAttributes(
                     typeof(SingleAddressAssetAttribute),
-                    inherit: false);
+                    false);
             }
             // 处理 .asset 文件
-            else if (typeof(ScriptableObject).IsAssignableFrom(assetType))
+            else if(typeof(ScriptableObject).IsAssignableFrom(assetType))
             {
                 assetClassType = assetType;
                 attributes = (SingleAddressAssetAttribute[])assetType.GetCustomAttributes(
                     typeof(SingleAddressAssetAttribute),
-                    inherit: false);
+                    false);
             }
 
-            if (attributes == null || attributes.Length == 0)
+            if(attributes == null || attributes.Length == 0)
                 return;
 
-            foreach (var attr in attributes)
+            foreach (SingleAddressAssetAttribute attr in attributes)
             {
-                if (assetClassType != null)
+                if(assetClassType != null)
                 {
                     AddToAddressables(assetClassType, attr, settings);
                 }
@@ -169,8 +168,8 @@ namespace CFramework.Editor.AddressablesTools
             AddressableAssetSettings settings)
         {
             // 查找该类型的所有资源实例
-            var guids = AssetDatabase.FindAssets($"t:{assetType.Name}");
-            if (guids == null || guids.Length == 0)
+            string[] guids = AssetDatabase.FindAssets($"t:{assetType.Name}");
+            if(guids == null || guids.Length == 0)
                 return;
 
             foreach (string guid in guids)
@@ -178,7 +177,7 @@ namespace CFramework.Editor.AddressablesTools
                 string assetPath = AssetDatabase.GUIDToAssetPath(guid);
 
                 // 跳过脚本文件本身
-                if (assetPath.EndsWith(".cs", StringComparison.OrdinalIgnoreCase))
+                if(assetPath.EndsWith(".cs", StringComparison.OrdinalIgnoreCase))
                     continue;
 
                 try
@@ -189,21 +188,21 @@ namespace CFramework.Editor.AddressablesTools
                         : attr.Group;
 
                     // 获取或创建组
-                    var group = settings.FindGroup(groupName);
-                    if (group == null)
+                    AddressableAssetGroup group = settings.FindGroup(groupName);
+                    if(group == null)
                     {
                         group = settings.CreateGroup(groupName, false, false, false, null);
                     }
 
                     // 创建或移动条目
-                    var entry = settings.CreateOrMoveEntry(guid, group);
-                    if (entry != null)
+                    AddressableAssetEntry entry = settings.CreateOrMoveEntry(guid, group);
+                    if(entry != null)
                     {
                         // 设置地址
                         entry.address = attr.Path;
 
                         // 设置标签
-                        if (!string.IsNullOrWhiteSpace(attr.Label))
+                        if(!string.IsNullOrWhiteSpace(attr.Label))
                         {
                             settings.AddLabel(attr.Label);
                             entry.SetLabel(attr.Label, true, true);
