@@ -74,7 +74,7 @@ namespace CFramework.Editor.AddressablesTools
             s_PendingProcess = false;
             EditorApplication.delayCall -= ProcessAssetChanges;
 
-            AddressablesFolderRegistry registry = ConfigUtility.GetOrCreateEditorConfig<AddressablesFolderRegistry>();
+            AddressableConfig registry = ConfigUtility.GetOrCreateEditorConfig<AddressableConfig>();
             List<FolderRecord> autoSyncRecords = GetAutoSyncRecords(registry);
 
             if(autoSyncRecords.Count == 0)
@@ -90,7 +90,7 @@ namespace CFramework.Editor.AddressablesTools
             ClearAssetChanges();
         }
 
-        private static List<FolderRecord> GetAutoSyncRecords(AddressablesFolderRegistry registry)
+        private static List<FolderRecord> GetAutoSyncRecords(AddressableConfig registry)
         {
             return registry.records.Where(r => r.autoSync).ToList();
         }

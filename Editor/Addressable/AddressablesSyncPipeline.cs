@@ -26,7 +26,7 @@ namespace CFramework.Editor.AddressablesTools
             }
         }
 
-        public static void SyncAll(AddressablesFolderRegistry reg)
+        public static void SyncAll(AddressableConfig reg)
         {
             foreach (FolderRecord rec in reg.records)
             {

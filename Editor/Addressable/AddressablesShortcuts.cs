@@ -22,7 +22,7 @@ namespace CFramework.Editor.AddressablesTools
             ShortcutModifiers.Action | ShortcutModifiers.Shift)]
         private static void OpenManagerWindow()
         {
-            EditorApplication.ExecuteMenuItem(CFMenuKey.Systems + "/Addressables/地址管理器");
+            EditorApplication.ExecuteMenuItem(CFMenuKey.Systems + "/Addressables/地址配置");
         }
 
         /// <summary>
@@ -35,7 +35,7 @@ namespace CFramework.Editor.AddressablesTools
             ShortcutModifiers.Action | ShortcutModifiers.Shift)]
         private static void SyncAll()
         {
-            AddressablesFolderRegistry registry = ConfigUtility.GetOrCreateEditorConfig<AddressablesFolderRegistry>();
+            AddressableConfig registry = ConfigUtility.GetOrCreateEditorConfig<AddressableConfig>();
             AddressablesSyncPipeline.SyncAll(registry);
             Debug.Log("[CFramework][Addressables] 已同步所有记录文件夹");
         }
@@ -63,7 +63,7 @@ namespace CFramework.Editor.AddressablesTools
             ShortcutModifiers.Action | ShortcutModifiers.Shift)]
         private static void GenerateConstants()
         {
-            AddressablesFolderRegistry registry = ConfigUtility.GetOrCreateEditorConfig<AddressablesFolderRegistry>();
+            AddressableConfig registry = ConfigUtility.GetOrCreateEditorConfig<AddressableConfig>();
             AddressablesCodeGen.Generate(registry);
             Debug.Log("[CFramework][Addressables] 已生成地址常量");
         }

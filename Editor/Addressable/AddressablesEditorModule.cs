@@ -32,7 +32,7 @@ namespace CFramework.Editor.AddressablesTools
 
         public void OnEditorProjectChanged()
         {
-            AddressablesFolderRegistry reg = ConfigUtility.GetOrCreateEditorConfig<AddressablesFolderRegistry>();
+            AddressableConfig reg = ConfigUtility.GetOrCreateEditorConfig<AddressableConfig>();
             List<FolderRecord> autoRecords = reg.records.FindAll(r => r.autoSync);
 
             if(autoRecords.Count == 0)
@@ -62,7 +62,7 @@ namespace CFramework.Editor.AddressablesTools
         /// </summary>
         public void OpenManagerWindow()
         {
-            EditorApplication.ExecuteMenuItem(CFMenuKey.Systems + "/Addressables/地址管理器");
+            EditorApplication.ExecuteMenuItem(CFMenuKey.Systems + "/Addressables/地址配置");
         }
 
         /// <summary>
@@ -70,7 +70,7 @@ namespace CFramework.Editor.AddressablesTools
         /// </summary>
         public void SyncAll()
         {
-            AddressablesFolderRegistry registry = ConfigUtility.GetOrCreateEditorConfig<AddressablesFolderRegistry>();
+            AddressableConfig registry = ConfigUtility.GetOrCreateEditorConfig<AddressableConfig>();
             AddressablesSyncPipeline.SyncAll(registry);
             Debug.Log("[CFramework][Addressables] 已同步所有记录文件夹");
         }
@@ -88,7 +88,7 @@ namespace CFramework.Editor.AddressablesTools
         /// </summary>
         public void GenerateAddressKeys()
         {
-            AddressablesFolderRegistry registry = ConfigUtility.GetOrCreateEditorConfig<AddressablesFolderRegistry>();
+            AddressableConfig registry = ConfigUtility.GetOrCreateEditorConfig<AddressableConfig>();
             AddressablesCodeGen.Generate(registry);
             Debug.Log("[CFramework][Addressables] 已生成地址常量");
         }
