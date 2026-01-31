@@ -35,7 +35,7 @@ namespace CFramework.Editor.AddressablesTools
             ShortcutModifiers.Action | ShortcutModifiers.Shift)]
         private static void SyncAll()
         {
-            AddressablesFolderRegistry registry = ConfigUtility.GetEditorConfig<AddressablesFolderRegistry>();
+            AddressablesFolderRegistry registry = ConfigUtility.GetOrCreateEditorConfig<AddressablesFolderRegistry>();
             AddressablesSyncPipeline.SyncAll(registry);
             Debug.Log("[CFramework][Addressables] 已同步所有记录文件夹");
         }
@@ -63,7 +63,7 @@ namespace CFramework.Editor.AddressablesTools
             ShortcutModifiers.Action | ShortcutModifiers.Shift)]
         private static void GenerateConstants()
         {
-            AddressablesFolderRegistry registry = ConfigUtility.GetEditorConfig<AddressablesFolderRegistry>();
+            AddressablesFolderRegistry registry = ConfigUtility.GetOrCreateEditorConfig<AddressablesFolderRegistry>();
             AddressablesCodeGen.Generate(registry);
             Debug.Log("[CFramework][Addressables] 已生成地址常量");
         }

@@ -11,7 +11,7 @@ namespace CFramework.Editor.AddressablesTools
 
         private void OnGUI()
         {
-            AddressablesFolderRegistry reg = ConfigUtility.GetEditorConfig<AddressablesFolderRegistry>();
+            AddressablesFolderRegistry reg = ConfigUtility.GetOrCreateEditorConfig<AddressablesFolderRegistry>();
             EditorGUILayout.LabelField("全局设置", EditorStyles.boldLabel);
             EditorGUI.indentLevel++;
             reg.codeGenNamespace = EditorGUILayout.TextField("命名空间", reg.codeGenNamespace);

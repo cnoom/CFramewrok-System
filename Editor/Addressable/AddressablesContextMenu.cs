@@ -17,7 +17,7 @@ namespace CFramework.Editor.AddressablesTools
                 {
                     string path = AssetDatabase.GetAssetPath(obj);
                     string guid = AssetDatabase.AssetPathToGUID(path);
-                    AddressablesFolderRegistry reg = ConfigUtility.GetEditorConfig<AddressablesFolderRegistry>();
+                    AddressablesFolderRegistry reg = ConfigUtility.GetOrCreateEditorConfig<AddressablesFolderRegistry>();
                     if(!reg.IsRecorded(guid)) continue;
                 }
 
@@ -54,7 +54,7 @@ namespace CFramework.Editor.AddressablesTools
         private static void RecordFolder(string path)
         {
             string guid = AssetDatabase.AssetPathToGUID(path);
-            AddressablesFolderRegistry reg = ConfigUtility.GetEditorConfig<AddressablesFolderRegistry>();
+            AddressablesFolderRegistry reg = ConfigUtility.GetOrCreateEditorConfig<AddressablesFolderRegistry>();
             if(reg.IsRecorded(guid))
             {
                 EditorUtility.DisplayDialog("已记录", $"该文件夹已被记录：\n{path}", "确定");
@@ -109,7 +109,7 @@ namespace CFramework.Editor.AddressablesTools
                     string path = AssetDatabase.GetAssetPath(obj);
                     if(!AssetDatabase.IsValidFolder(path)) return false;
                     string guid = AssetDatabase.AssetPathToGUID(path);
-                    AddressablesFolderRegistry reg = ConfigUtility.GetEditorConfig<AddressablesFolderRegistry>();
+                    AddressablesFolderRegistry reg = ConfigUtility.GetOrCreateEditorConfig<AddressablesFolderRegistry>();
                     if(reg.IsRecorded(guid)) continue;
                 }
 
@@ -127,7 +127,7 @@ namespace CFramework.Editor.AddressablesTools
             {
                 string path = AssetDatabase.GetAssetPath(obj);
                 string guid = AssetDatabase.AssetPathToGUID(path);
-                AddressablesFolderRegistry reg = ConfigUtility.GetEditorConfig<AddressablesFolderRegistry>();
+                AddressablesFolderRegistry reg = ConfigUtility.GetOrCreateEditorConfig<AddressablesFolderRegistry>();
                 FolderRecord rec = reg.GetRecord(guid);
                 if(rec != null)
                 {
@@ -147,7 +147,7 @@ namespace CFramework.Editor.AddressablesTools
         [MenuItem("Assets/CFramework/Addressables/Sync Recorded Folders")]
         private static void SyncAll()
         {
-            AddressablesFolderRegistry reg = ConfigUtility.GetEditorConfig<AddressablesFolderRegistry>();
+            AddressablesFolderRegistry reg = ConfigUtility.GetOrCreateEditorConfig<AddressablesFolderRegistry>();
             AddressablesSyncPipeline.SyncAll(reg);
             EditorUtility.DisplayDialog("同步完成", "已同步所有记录的文件夹。", "确定");
         }
@@ -155,7 +155,7 @@ namespace CFramework.Editor.AddressablesTools
         [MenuItem("Assets/CFramework/Addressables/Generate Address Keys")]
         private static void GenerateKeys()
         {
-            AddressablesFolderRegistry reg = ConfigUtility.GetEditorConfig<AddressablesFolderRegistry>();
+            AddressablesFolderRegistry reg = ConfigUtility.GetOrCreateEditorConfig<AddressablesFolderRegistry>();
             AddressablesCodeGen.Generate(reg);
             EditorUtility.DisplayDialog("生成完成", "已生成地址常量。", "确定");
         }
