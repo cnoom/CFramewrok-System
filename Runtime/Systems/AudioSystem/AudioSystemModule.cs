@@ -102,8 +102,7 @@ namespace CFramework.Systems.AudioSystem
 
             await CF.Execute(new AssetsCommands.RegisterAssetReceiver(typeof(AudioConfig)));
             // 直接通过 AssetsSystem 加载 AudioConfig
-            _config = await CF.Query<AssetsQueries.Asset, AudioConfig>(
-                new AssetsQueries.Asset("AudioConfig"));
+            _config = await CF.Query(new AssetsQueries.Asset<AudioConfig>("AudioConfig"));
 
             if(!_config)
             {
@@ -470,7 +469,7 @@ namespace CFramework.Systems.AudioSystem
                 }
 
                 // 通过 AssetsSystemModule 异步加载音频
-                AudioClip clip = await CF.Query<AssetsQueries.Asset, AudioClip>(new AssetsQueries.Asset(cmd.ClipKey));
+                AudioClip clip = await CF.Query(new AssetsQueries.Asset<AudioClip>(cmd.ClipKey));
                 if(clip == null)
                 {
                     CF.Broadcast(new AudioBroadcasts.AudioError("LoadFail", "AudioClip is null", cmd.ClipKey)).Forget();
@@ -585,7 +584,7 @@ namespace CFramework.Systems.AudioSystem
             try
             {
                 if(string.IsNullOrEmpty(cmd.ClipKey)) return;
-                AudioClip clip = await CF.Query<AssetsQueries.Asset, AudioClip>(new AssetsQueries.Asset(cmd.ClipKey));
+                AudioClip clip = await CF.Query(new AssetsQueries.Asset<AudioClip>(cmd.ClipKey));
                 if(!clip)
                 {
                     CF.Broadcast(new AudioBroadcasts.AudioError("LoadFail", "AudioClip is null", cmd.ClipKey)).Forget();

@@ -8,7 +8,7 @@ namespace CFramework.Systems.SceneSystem
         ///     查询当前逻辑场景信息。
         /// </summary>
         /// <returns>当前逻辑场景的信息快照 <see cref="SceneInfo" /></returns>
-        public readonly struct GetCurrentSceneInfo : IQueryData
+        public readonly struct GetCurrentSceneInfo : IQueryData<SceneInfo>
         {
         }
 
@@ -16,7 +16,7 @@ namespace CFramework.Systems.SceneSystem
         ///     查询指定场景加载进度（0~1）。
         /// </summary>
         /// <returns>场景加载进度（0-1）。</returns>
-        public readonly struct GetSceneProgress : IQueryData
+        public readonly struct GetSceneProgress : IQueryData<float>
         {
             /// <summary>要查询的逻辑场景 Key。</summary>
             public readonly string SceneKey;

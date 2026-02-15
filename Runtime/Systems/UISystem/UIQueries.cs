@@ -8,7 +8,7 @@ namespace CFramework.Systems.UISystem
         ///     查询视图是否打开的请求。
         /// </summary>
         /// <returns>是否满足条件的视图存在。</returns>
-        public readonly struct IsOpen : IQueryData
+        public readonly struct IsOpen : IQueryData<bool>
         {
             /// <summary>视图地址键（可选）。</summary>
             public readonly string Key; // optional
@@ -30,7 +30,7 @@ namespace CFramework.Systems.UISystem
         ///     查询某一层顶部视图的请求。
         /// </summary>
         /// <returns>指定层栈顶视图的实例信息。</returns>
-        public readonly struct GetTop : IQueryData
+        public readonly struct GetTop : IQueryData<ViewInfo>
         {
             /// <summary>目标层名（可选，为空时查询默认层）。</summary>
             public readonly string Layer; // optional
@@ -47,7 +47,7 @@ namespace CFramework.Systems.UISystem
         ///     查询已打开视图列表的请求。
         /// </summary>
         /// <returns>符合条件的已打开视图集合。</returns>
-        public readonly struct GetOpenViews : IQueryData
+        public readonly struct GetOpenViews : IQueryData<ViewInfo[]>
         {
             /// <summary>用于筛选的层名（可选）。</summary>
             public readonly string Layer; // optional filter

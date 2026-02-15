@@ -1,4 +1,5 @@
 ﻿using CFramework.Core.QuerySystem;
+using CFramework.Systems.SaveSystem.Data;
 
 namespace CFramework.Systems.SaveSystem
 {
@@ -8,7 +9,7 @@ namespace CFramework.Systems.SaveSystem
         ///     获取当前的存档的Key
         /// </summary>
         /// <returns>存档的Key</returns>
-        public struct CurrentProfile : IQueryData
+        public struct CurrentProfile : IQueryData<string>
         {
         }
 
@@ -16,7 +17,7 @@ namespace CFramework.Systems.SaveSystem
         ///     获取当前的存档的指定槽位。
         /// </summary>
         /// <returns>存档的指定槽位。</returns>
-        public struct CurrentProfileSlot : IQueryData
+        public struct CurrentProfileSlot : IQueryData<Slot>
         {
             /// <summary>存档的槽位 Id。</summary>
             public string SlotId;

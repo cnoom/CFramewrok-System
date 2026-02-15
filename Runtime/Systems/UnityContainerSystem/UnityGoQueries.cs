@@ -1,5 +1,6 @@
 ﻿using System;
 using CFramework.Core.QuerySystem;
+using UnityEngine;
 
 namespace CFramework.Systems.UnityContainerSystem
 {
@@ -8,7 +9,7 @@ namespace CFramework.Systems.UnityContainerSystem
         /// <summary>
         ///     获取 GameObject 查询
         /// </summary>
-        public readonly struct GetGameObject : IQueryData
+        public readonly struct GetGameObject : IQueryData<GameObject>
         {
             public readonly string Key;
             public readonly string Scope;
@@ -22,7 +23,7 @@ namespace CFramework.Systems.UnityContainerSystem
         /// <summary>
         ///     获取 Transform 查询
         /// </summary>
-        public readonly struct GetTransform : IQueryData
+        public readonly struct GetTransform : IQueryData<Transform>
         {
             public readonly string Key;
             public readonly string Scope;
@@ -36,7 +37,7 @@ namespace CFramework.Systems.UnityContainerSystem
         /// <summary>
         ///     获取 RectTransform 查询
         /// </summary>
-        public readonly struct GetRectTransform : IQueryData
+        public readonly struct GetRectTransform : IQueryData<RectTransform>
         {
             public readonly string Key;
             public readonly string Scope;
@@ -50,7 +51,7 @@ namespace CFramework.Systems.UnityContainerSystem
         /// <summary>
         ///     获取 Component 查询
         /// </summary>
-        public readonly struct GetComponent : IQueryData
+        public readonly struct GetComponent : IQueryData<Component>
         {
             public readonly Type ComponentType;
             public readonly string Key;

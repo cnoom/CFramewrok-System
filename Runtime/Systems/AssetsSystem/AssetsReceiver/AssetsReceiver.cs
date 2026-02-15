@@ -25,13 +25,13 @@ namespace CFramework.Systems.AssetsSystem.AssetsReceiver
         }
 
         [QueryHandler]
-        public UniTask<TAssetType> LoadAsset(AssetsQueries.Asset query, CancellationToken cancellationToken)
+        public UniTask<TAssetType> LoadAsset(AssetsQueries.Asset<TAssetType> query, CancellationToken cancellationToken)
         {
             return _assetsSystemModule.LoadAssetAsync<TAssetType>(query.Address, cancellationToken);
         }
 
         [QueryHandler]
-        public UniTask<TAssetType[]> LoadAssets(AssetsQueries.Assets query, CancellationToken cancellationToken)
+        public UniTask<TAssetType[]> LoadAssets(AssetsQueries.Assets<TAssetType> query, CancellationToken cancellationToken)
         {
             return _assetsSystemModule.LoadAssetsAsync<TAssetType>(query.Label, cancellationToken);
         }

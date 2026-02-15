@@ -7,7 +7,7 @@ namespace CFramework.Systems.AudioSystem
         /// <summary>
         ///     查询音量
         /// </summary>
-        public readonly struct Volume : IQueryData
+        public readonly struct Volume : IQueryData<float>
         {
             /// <summary>要查询的音频类别。</summary>
             public readonly AudioCategory Category;
@@ -21,7 +21,7 @@ namespace CFramework.Systems.AudioSystem
         /// <summary>
         ///     查询静音状态
         /// </summary>
-        public readonly struct Mute : IQueryData
+        public readonly struct Mute : IQueryData<bool>
         {
             /// <summary>要查询的音频类别。</summary>
             public readonly AudioCategory Category;
@@ -35,7 +35,7 @@ namespace CFramework.Systems.AudioSystem
         /// <summary>
         ///     查询当前激活背景音乐的请求
         /// </summary>
-        public readonly struct GetActiveMusic : IQueryData
+        public readonly struct GetActiveMusic : IQueryData<AudioSystemModule.ActiveMusicInfo>
         {
         }
     }

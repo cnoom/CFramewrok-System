@@ -8,7 +8,7 @@ namespace CFramework.Systems.TimerSystem
         ///     查询指定 Id 的定时器是否存在。
         /// </summary>
         /// <returns>是否存在具有指定 Id 的定时器。</returns>
-        public readonly struct HasTimer : IQueryData
+        public readonly struct HasTimer : IQueryData<bool>
         {
             /// <summary>要检查的定时器唯一标识。</summary>
             public readonly string Id;
@@ -25,7 +25,7 @@ namespace CFramework.Systems.TimerSystem
         ///     查询指定 Id 的定时器剩余秒数。
         /// </summary>
         /// <returns>定时器剩余的秒数。</returns>
-        public readonly struct GetRemainingSeconds : IQueryData
+        public readonly struct GetRemainingSeconds : IQueryData<float>
         {
             /// <summary>目标定时器唯一标识。</summary>
             public readonly string Id;
@@ -42,7 +42,7 @@ namespace CFramework.Systems.TimerSystem
         ///     查询指定 Id 的定时器详细信息。
         /// </summary>
         /// <returns>定时器运行时信息 <see cref="TimerInfo" />。</returns>
-        public readonly struct GetTimerInfo : IQueryData
+        public readonly struct GetTimerInfo : IQueryData<TimerInfo>
         {
             /// <summary>目标定时器唯一标识。</summary>
             public readonly string Id;

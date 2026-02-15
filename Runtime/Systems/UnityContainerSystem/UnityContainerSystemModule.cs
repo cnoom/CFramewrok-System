@@ -28,8 +28,7 @@ namespace CFramework.Systems.UnityContainerSystem
         {
             // 直接通过 AssetsSystem 加载配置
             await CF.Execute(new AssetsCommands.RegisterAssetReceiver(typeof(UnityContainerConfig)));
-            config = await CF.Query<AssetsQueries.Asset, UnityContainerConfig>(
-                new AssetsQueries.Asset("CF_UnityContainerConfig"));
+            config = await CF.Query(new AssetsQueries.Asset<UnityContainerConfig>("CF_UnityContainerConfig"));
             _logger = CF.CreateLogger(config?.tag ?? nameof(IUnityContainerSystem));
         }
 

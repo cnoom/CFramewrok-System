@@ -51,8 +51,7 @@ namespace CFramework.Systems.UISystem
             await CF.Execute(new AssetsCommands.RegisterAssetReceiver(typeof(UIConfig)));
 
             // 直接通过 AssetsSystem 加载 UIConfig
-            _config = await CF.Query<AssetsQueries.Asset, UIConfig>(
-                new AssetsQueries.Asset("UIConfig"));
+            _config = await CF.Query(new AssetsQueries.Asset<UIConfig>("UIConfig"));
             if(!_config)
             {
                 CF.LogWarning("UIConfig 未找到，使用默认配置。");
@@ -544,7 +543,7 @@ namespace CFramework.Systems.UISystem
             GameObject prefab = null;
             try
             {
-                prefab = await CF.Query<AssetsQueries.Asset, GameObject>(new AssetsQueries.Asset(cmd.Key));
+                prefab = await CF.Query(new AssetsQueries.Asset<GameObject>(cmd.Key));
             }
             catch (Exception e)
             {
